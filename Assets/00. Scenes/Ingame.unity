@@ -438,8 +438,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3553cc6f0bf55bf42954932d6d4545cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 3
-  forwardForce: 20
+  moveSpeed: 3
+  moveDistance: 0.3
+  jumpForce: 7
+  forwardForce: 1
   gruondLayer:
     serializedVersion: 2
     m_Bits: 64
