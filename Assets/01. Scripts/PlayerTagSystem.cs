@@ -15,7 +15,6 @@ public class PlayerTagSystem : MonoBehaviour
     {
         if (playerPrefabs.Length > 0)
         {
-            // 첫 번째 플레이어 생성 (시작 위치는 (0, -4, 0))
             SwitchPlayer(0, new Vector3(0, 2.5f, 0));
         }
         else
