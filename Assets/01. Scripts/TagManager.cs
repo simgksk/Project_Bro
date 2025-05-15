@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerTagSystem : MonoBehaviour
+public class TagManager : MonoBehaviour
 {
     [Header("Player Prefabs")]
     public GameObject[] playerPrefabs;  // 사용할 플레이어 프리팹들
@@ -35,11 +35,6 @@ public class PlayerTagSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 플레이어를 교체한다.
-    /// </summary>
-    /// <param name="index">교체할 플레이어 인덱스</param>
-    /// <param name="spawnPosition">새로운 플레이어의 위치</param>
     void SwitchPlayer(int index, Vector3 spawnPosition)
     {
         if (index < 0 || index >= playerPrefabs.Length) return;
@@ -68,10 +63,6 @@ public class PlayerTagSystem : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 현재 플레이어의 Transform 반환
-    /// </summary>
-    /// <returns></returns>
     public Transform GetCurrentPlayerTransform()
     {
         return currentPlayer?.transform;

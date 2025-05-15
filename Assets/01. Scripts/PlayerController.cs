@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Move Setting")]
     public float moveSpeed = 5f;
