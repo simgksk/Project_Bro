@@ -172,5 +172,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveDistance: 0.5
+  jumpPower: 1
   skeletonAnimation: {fileID: 0}
-  animationName: walk

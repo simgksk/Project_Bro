@@ -101,9 +101,9 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.9166667
-    functionName: 
+    functionName: CheckAnimation
     data: 
-    objectReferenceParameter: {fileID: 0}
+    objectReferenceParameter: {fileID: 11500000, guid: 11c3f6a523bd24e4aa6bd851a1319a8c, type: 3}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0

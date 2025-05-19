@@ -1,10 +1,12 @@
 using Spine;
 using Spine.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+[RequireComponent(typeof(Rigidbody))]
 public abstract class Character : MonoBehaviour
 {
     [Header ("Move Setting")]
@@ -24,7 +26,7 @@ public abstract class Character : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         skeletonAnimation.state.SetAnimation(0, "Idle", true);
     }
-
+    
     public virtual void Move()
     {
         if (Input.GetKeyDown(KeyCode.D))
@@ -54,7 +56,26 @@ public abstract class Character : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Space))
         {
             rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
+            JumpAnimaion();
         }
     }
+
+    private void JumpAnimaion()
+    {
+        if (skeletonAnimation == null)
+            return;
+
+        skeletonAnimation.state.ClearTrack(0);
+
+        TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "Jump", false);
+        entry.MixDuration = 0f;
+        entry.Delay = 0f;
+
+        entry.Complete += (entry) =>
+        {
+            skeletonAnimation.state.SetAnimation(0, "Idle", true).MixDuration = 0f;
+        };
+    }
+
     public abstract void Attack();
 }
