@@ -530,6 +530,7 @@ MonoBehaviour:
   playerPrefabs:
   - {fileID: 848346820925968956, guid: 90f0e7af1da315e44acc223bf7060c5e, type: 3}
   - {fileID: 4703884486747555673, guid: 8f342c8ec29b65f41b882443951cb5bd, type: 3}
+  - {fileID: 6108657939703752258, guid: 69492bb0df1e40d439328421c0d5acb6, type: 3}
   cameraPrefab: {fileID: 8879416788920806319, guid: d47e3d7b696e2ef4d9227561fac9ee41, type: 3}
 --- !u!4 &1051183427
 Transform:
