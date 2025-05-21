@@ -30,14 +30,19 @@ public abstract class Character : MonoBehaviour
             skeletonAnimation.state.SetAnimation(0, "Idle", true);
         }
     }
+    public virtual void Update()
+    {
+        Move();
+        Jump();
+        ClickAttack();
+    }
 
     public virtual void Move()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.D))
         {
-            Vector3 move = transform.position + Vector3.right * moveDistance;
-            rb.MovePosition(move);
             MoveAnimation();
+            transform.position += Vector3.right * moveSpeed * moveDistance;
         }
     }
     public virtual void MoveAnimation()
@@ -58,7 +63,7 @@ public abstract class Character : MonoBehaviour
     }
     public virtual void Jump() 
     { 
-        if(Input.GetKeyDown(KeyCode.D))
+        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
         {
             rb.velocity = Vector3.zero;
 
@@ -68,7 +73,6 @@ public abstract class Character : MonoBehaviour
             JumpAnimation();
         }
     }
-
     protected virtual void JumpAnimation()
     {
         if (skeletonAnimation == null)
@@ -84,6 +88,13 @@ public abstract class Character : MonoBehaviour
         {
             skeletonAnimation.state.SetAnimation(0, "Idle", true).MixDuration = 0f;
         };
+    }
+    public virtual void ClickAttack()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Attack();
+        }
     }
 
     public abstract void Attack();

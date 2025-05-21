@@ -11,10 +11,9 @@ public class Bro : Character
         base.Start();
         animator = GetComponent<Animator>();
     }
-    void Update()
+    public override void Update()
     {
-        Move();
-        Jump();
+        base.Update();
     }
     public override void MoveAnimation()
     {

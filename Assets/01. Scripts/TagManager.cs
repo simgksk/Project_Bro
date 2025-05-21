@@ -3,23 +3,19 @@ using UnityEngine;
 public class TagManager : MonoBehaviour
 {
     [Header("Player Prefabs")]
-    public GameObject[] playerPrefabs;  // 사용할 플레이어 프리팹들
+    public GameObject[] playerPrefabs; 
 
     [Header("Camera Prefab")]
-    public GameObject cameraPrefab;     // 카메라 프리팹
+    public GameObject cameraPrefab;    
 
-    private GameObject currentPlayer;    // 현재 활성화된 플레이어
-    private GameObject currentCamera;    // 현재 활성화된 카메라
+    private GameObject currentPlayer;    
+    private GameObject currentCamera;    
 
     void Start()
     {
         if (playerPrefabs.Length > 0)
         {
             SwitchPlayer(0, new Vector3(0, 2.5f, 0));
-        }
-        else
-        {
-            Debug.LogWarning("Player Prefabs가 비어있습니다.");
         }
     }
 
@@ -39,27 +35,19 @@ public class TagManager : MonoBehaviour
     {
         if (index < 0 || index >= playerPrefabs.Length) return;
 
-        // 기존 플레이어와 카메라 삭제
         if (currentPlayer != null) Destroy(currentPlayer);
         if (currentCamera != null) Destroy(currentCamera);
 
-        // 새로운 플레이어 생성
         currentPlayer = Instantiate(playerPrefabs[index], spawnPosition, Quaternion.identity);
 
-        // 플레이어를 Player 오브젝트의 자식으로 설정
         currentPlayer.transform.SetParent(this.transform);
 
-        // 카메라 생성 및 플레이어 오브젝트에 넣기
         if (cameraPrefab != null)
         {
             currentCamera = Instantiate(cameraPrefab);
             currentCamera.transform.SetParent(currentPlayer.transform);
             currentCamera.transform.localPosition = new Vector3(0, 2, -10);
             currentCamera.transform.localRotation = Quaternion.identity;
-        }
-        else
-        {
-            Debug.LogWarning("Camera Prefab이 설정되지 않았습니다.");
         }
     }
 

@@ -8,10 +8,9 @@ public class Pazzi : Character
     {
         base.Start();
     }
-    void Update()
+    public override void Update()
     {
-        Move();
-        Jump();
+        base.Update();
     }
     public override void Attack()
     {
