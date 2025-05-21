@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Pongya : Character
 {
-    void Start()
+    protected override void Start()
     {
-        
+        base.Start();
     }
     void Update()
     {

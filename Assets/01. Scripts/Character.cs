@@ -21,12 +21,16 @@ public abstract class Character : MonoBehaviour
     [Header ("Spain & Animaion Setting")]
     public SkeletonAnimation skeletonAnimation;
 
-    void Start()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
-        skeletonAnimation.state.SetAnimation(0, "Idle", true);
+
+        if (skeletonAnimation != null)
+        {
+            skeletonAnimation.state.SetAnimation(0, "Idle", true);
+        }
     }
-    
+
     public virtual void Move()
     {
         if (Input.GetKeyDown(KeyCode.D))
@@ -55,12 +59,16 @@ public abstract class Character : MonoBehaviour
     { 
         if(Input.GetKeyDown(KeyCode.Space))
         {
-            rb.AddForce(Vector3.up * jumpPower, ForceMode.Impulse);
-            JumpAnimaion();
+            rb.velocity = Vector3.zero;
+
+            Vector3 jumpDirection = Vector3.up * jumpForce;
+            rb.AddForce(jumpDirection, ForceMode.Impulse);
+
+            JumpAnimation();
         }
     }
 
-    private void JumpAnimaion()
+    protected virtual void JumpAnimation()
     {
         if (skeletonAnimation == null)
             return;

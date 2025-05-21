@@ -5,8 +5,10 @@ using UnityEngine;
 public class Bro : Character
 {
     Animator animator;
-    void Start()
+
+    protected override void Start()
     {
+        base.Start();
         animator = GetComponent<Animator>();
     }
     void Update()
@@ -21,6 +23,11 @@ public class Bro : Character
     private void CheckAnimation()
     {
         animator.SetBool("isRunning", false);
+    }
+    protected override void JumpAnimation()
+    {
+        if (animator == null) return;
+
     }
     public override void Attack()
     {
