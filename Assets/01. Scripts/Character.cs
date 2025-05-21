@@ -33,9 +33,10 @@ public abstract class Character : MonoBehaviour
 
     public virtual void Move()
     {
-        if (Input.GetKeyDown(KeyCode.D))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            transform.position += Vector3.right * moveSpeed * moveDistance;
+            Vector3 move = transform.position + Vector3.right * moveDistance;
+            rb.MovePosition(move);
             MoveAnimation();
         }
     }
@@ -57,7 +58,7 @@ public abstract class Character : MonoBehaviour
     }
     public virtual void Jump() 
     { 
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(Input.GetKeyDown(KeyCode.D))
         {
             rb.velocity = Vector3.zero;
 
