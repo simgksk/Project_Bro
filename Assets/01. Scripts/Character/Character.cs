@@ -10,7 +10,7 @@ using UnityEngine.UIElements;
 public abstract class Character : MonoBehaviour
 {
     [Header ("Move Setting")]
-    public float moveDistance = 0.3f;
+    //public float moveDistance = 0.3f;
     protected float moveSpeed = 5f;
     protected float jumpForce = 7f;
 
@@ -20,15 +20,12 @@ public abstract class Character : MonoBehaviour
 
     [Header ("Spain & Animaion Setting")]
     public SkeletonAnimation skeletonAnimation;
+    private Animator animator;
 
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
-
-        if (skeletonAnimation != null)
-        {
-            skeletonAnimation.state.SetAnimation(0, "Idle", true);
-        }
+        AnimationTypeCheck();
     }
     public virtual void Update()
     {
@@ -36,22 +33,43 @@ public abstract class Character : MonoBehaviour
         Jump();
         ClickAttack();
     }
-
-    public virtual void Move()
+    private void AnimationTypeCheck()
     {
-        if (Input.GetKeyDown(KeyCode.D))
+        if (skeletonAnimation != null)
         {
-            MoveAnimation();
-            transform.position += Vector3.right * moveSpeed * moveDistance;
+            skeletonAnimation = GetComponent<SkeletonAnimation>();
+            skeletonAnimation.state.SetAnimation(0, "Idle", true);
+        }
+        else
+        {
+            animator = GetComponent<Animator>();
         }
     }
-    public virtual void MoveAnimation()
+    public virtual void Move()
     {
-        if (skeletonAnimation == null)
-            return;
+        if (Input.GetKey(KeyCode.D))
+        {
+            transform.position += Vector3.right * moveSpeed * Time.deltaTime;
+
+            if(skeletonAnimation != null)
+            {
+                MoveSpainAnimation();
+            }
+            else if(animator != null)
+            {
+                MoveAnimation();
+            }
+        }
+    }
+    protected virtual void MoveAnimation()
+    {
+        animator.SetBool("isRunning", true);
+    }
+    protected virtual void MoveSpainAnimation()
+    {
+        if (skeletonAnimation.AnimationName == "Run") return;
 
         skeletonAnimation.state.ClearTrack(0);
-
         TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "Run", false);
         entry.MixDuration = 0f;
         entry.Delay = 0f;
@@ -70,16 +88,25 @@ public abstract class Character : MonoBehaviour
             Vector3 jumpDirection = Vector3.up * jumpForce;
             rb.AddForce(jumpDirection, ForceMode.Impulse);
 
-            JumpAnimation();
+            if (skeletonAnimation != null)
+            {
+                JumpSpainAnimation();
+            }
+            else if (animator != null)
+            {
+                JumpAnimation();
+            }
         }
     }
     protected virtual void JumpAnimation()
     {
-        if (skeletonAnimation == null)
-            return;
+        Debug.Log("Jump");
+    }
+    protected virtual void JumpSpainAnimation()
+    {
+        if (skeletonAnimation.AnimationName == "Jump") return;
 
         skeletonAnimation.state.ClearTrack(0);
-
         TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "Jump", false);
         entry.MixDuration = 0f;
         entry.Delay = 0f;
@@ -96,6 +123,5 @@ public abstract class Character : MonoBehaviour
             Attack();
         }
     }
-
     public abstract void Attack();
 }
