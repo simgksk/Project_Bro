@@ -12,6 +12,7 @@ public abstract class Character : MonoBehaviour
     [Header("Jump Setting")]
     public float jumpPower = 1f;
     private Rigidbody rb;
+    bool isJumping = false;
 
     [Header("Spain & Animaion Setting")]
     public SkeletonAnimation skeletonAnimation;
@@ -52,22 +53,37 @@ public abstract class Character : MonoBehaviour
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
 
+        if(isJumping)
+        {
+            return;
+        }
+
         if (skeletonAnimation != null)
         {
-            SetSpineAnimation(isMoving ? "Run" : "Idle");
+            if (currentAnimation != "Run")
+                SetSpineAnimation("Run");
         }
         else if (animator != null)
         {
             animator.SetBool("isRunning", isMoving);
         }
     }
-    protected virtual void SetSpineAnimation(string animationName)
+    protected virtual void SetSpineAnimation(string animationName, bool loop = true)
     {
-        if (currentAnimation == animationName)
+        if (currentAnimation == animationName && loop)
             return;
 
-        skeletonAnimation.state.SetAnimation(0, animationName, true);
+        var trackEntry = skeletonAnimation.state.SetAnimation(0, animationName, loop);
         currentAnimation = animationName;
+
+        if (!loop)
+        {
+            trackEntry.Complete += (trackEntry) =>
+            {
+                SetSpineAnimation("Idle", true);
+                currentAnimation = "Idle";
+            };
+        }
     }
 
     #endregion
@@ -77,6 +93,8 @@ public abstract class Character : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
         {
+            isJumping = true;
+
             rb.velocity = Vector3.zero;
 
             Vector3 jumpDirection = Vector3.up * jumpForce;
@@ -84,31 +102,13 @@ public abstract class Character : MonoBehaviour
 
             if (skeletonAnimation != null)
             {
-                JumpSpainAnimation();
+                SetSpineAnimation("Jump", false);
             }
             else if (animator != null)
             {
-                JumpAnimation();
+                animator.SetTrigger("Jump");
             }
         }
-    }
-    protected virtual void JumpAnimation()
-    {
-        Debug.Log("Jump");
-    }
-    protected virtual void JumpSpainAnimation()
-    {
-        if (skeletonAnimation.AnimationName == "Jump") return;
-
-        skeletonAnimation.state.ClearTrack(0);
-        TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "Jump", false);
-        entry.MixDuration = 0f;
-        entry.Delay = 0f;
-
-        entry.Complete += (entry) =>
-        {
-            skeletonAnimation.state.SetAnimation(0, "Idle", true).MixDuration = 0f;
-        };
     }
 
     #endregion
