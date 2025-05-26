@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1643844929694286672}
   - component: {fileID: 1497292853912743913}
   - component: {fileID: 8516416408089514278}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Bro
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,6 +171,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11c3f6a523bd24e4aa6bd851a1319a8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveDistance: 0.5
   jumpPower: 1
   skeletonAnimation: {fileID: 0}

@@ -1,16 +1,11 @@
 using Spine;
 using Spine.Unity;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Rigidbody))]
 public abstract class Character : MonoBehaviour
 {
-    [Header ("Move Setting")]
-    //public float moveDistance = 0.3f;
+    [Header("Move Setting")]
     protected float moveSpeed = 5f;
     protected float jumpForce = 7f;
 
@@ -18,9 +13,10 @@ public abstract class Character : MonoBehaviour
     public float jumpPower = 1f;
     private Rigidbody rb;
 
-    [Header ("Spain & Animaion Setting")]
+    [Header("Spain & Animaion Setting")]
     public SkeletonAnimation skeletonAnimation;
     private Animator animator;
+    private string currentAnimation = "";
 
     protected virtual void Start()
     {
@@ -45,43 +41,41 @@ public abstract class Character : MonoBehaviour
             animator = GetComponent<Animator>();
         }
     }
+
+    #region Move
     public virtual void Move()
     {
-        if (Input.GetKey(KeyCode.D))
+        bool isMoving = Input.GetKey(KeyCode.D);
+
+        if (isMoving)
         {
             transform.position += Vector3.right * moveSpeed * Time.deltaTime;
+        }
 
-            if(skeletonAnimation != null)
-            {
-                MoveSpainAnimation();
-            }
-            else if(animator != null)
-            {
-                MoveAnimation();
-            }
+        if (skeletonAnimation != null)
+        {
+            SetSpineAnimation(isMoving ? "Run" : "Idle");
+        }
+        else if (animator != null)
+        {
+            animator.SetBool("isRunning", isMoving);
         }
     }
-    protected virtual void MoveAnimation()
+    protected virtual void SetSpineAnimation(string animationName)
     {
-        animator.SetBool("isRunning", true);
+        if (currentAnimation == animationName)
+            return;
+
+        skeletonAnimation.state.SetAnimation(0, animationName, true);
+        currentAnimation = animationName;
     }
-    protected virtual void MoveSpainAnimation()
+
+    #endregion
+
+    #region Jump
+    public virtual void Jump()
     {
-        if (skeletonAnimation.AnimationName == "Run") return;
-
-        skeletonAnimation.state.ClearTrack(0);
-        TrackEntry entry = skeletonAnimation.state.SetAnimation(0, "Run", false);
-        entry.MixDuration = 0f;
-        entry.Delay = 0f;
-
-        entry.Complete += (entry) =>
-        {
-            skeletonAnimation.state.SetAnimation(0, "Idle", true).MixDuration = 0f;
-        };
-    }
-    public virtual void Jump() 
-    { 
-        if(Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
         {
             rb.velocity = Vector3.zero;
 
@@ -116,6 +110,11 @@ public abstract class Character : MonoBehaviour
             skeletonAnimation.state.SetAnimation(0, "Idle", true).MixDuration = 0f;
         };
     }
+
+    #endregion
+
+    #region Attack
+
     public virtual void ClickAttack()
     {
         if (Input.GetMouseButtonDown(0))
@@ -124,4 +123,6 @@ public abstract class Character : MonoBehaviour
         }
     }
     public abstract void Attack();
+
+    #endregion
 }

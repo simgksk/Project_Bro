@@ -1,17 +1,20 @@
+using Spine.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [Header("Spain & Animaion Setting")]
+    public SkeletonAnimation skeletonAnimation;
+
+    protected virtual void Start()
     {
-        
+        skeletonAnimation = GetComponent<SkeletonAnimation>();
+        skeletonAnimation.state.SetAnimation(0, "animation", true);
     }
 
-    // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         
     }

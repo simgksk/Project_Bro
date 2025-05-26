@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2047072745978565305}
   - component: {fileID: 6500425755823382463}
   - component: {fileID: 1862238840657523587}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Pazzi
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,3 +171,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f696359037bc2e4db6434e5da15125f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jumpPower: 1
+  skeletonAnimation: {fileID: 0}
