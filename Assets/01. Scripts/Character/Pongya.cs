@@ -14,6 +14,6 @@ public class Pongya : Character
     }
     public override void Attack()
     {
-        throw new System.NotImplementedException();
+        Debug.Log("Pongya Attack");
     }
 }

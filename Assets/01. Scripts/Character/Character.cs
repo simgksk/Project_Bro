@@ -132,7 +132,16 @@ public abstract class Character : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Attack();
+            if (skeletonAnimation != null)
+            {
+                SetSpineAnimation("Attack", false);
+                Attack();
+            }
+            else if (animator != null)
+            {
+                animator.SetTrigger("Attack");
+                Attack();
+            }
         }
     }
     public abstract void Attack();
