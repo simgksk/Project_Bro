@@ -60,29 +60,11 @@ public abstract class Character : MonoBehaviour
 
         if (skeletonAnimation != null)
         {
-            if (currentAnimation != "Run")
-                SetSpineAnimation("Run");
+            SetSpineAnimation(isMoving ? "Run" : "Idle");
         }
         else if (animator != null)
         {
             animator.SetBool("isRunning", isMoving);
-        }
-    }
-    protected virtual void SetSpineAnimation(string animationName, bool loop = true)
-    {
-        if (currentAnimation == animationName && loop)
-            return;
-
-        var trackEntry = skeletonAnimation.state.SetAnimation(0, animationName, loop);
-        currentAnimation = animationName;
-
-        if (!loop)
-        {
-            trackEntry.Complete += (trackEntry) =>
-            {
-                SetSpineAnimation("Idle", true);
-                currentAnimation = "Idle";
-            };
         }
     }
 
@@ -108,6 +90,37 @@ public abstract class Character : MonoBehaviour
             {
                 animator.SetTrigger("Jump");
             }
+        }
+    }
+
+    #endregion
+
+    #region Spain Animation
+
+    protected virtual void SetSpineAnimation(string animationName, bool loop = true)
+    {
+        if (currentAnimation == animationName && loop)
+            return;
+
+        var trackEntry = skeletonAnimation.state.SetAnimation(0, animationName, loop);
+        currentAnimation = animationName;
+
+        if (!loop)
+        {
+            trackEntry.Complete += (trackEntry) =>
+            {
+                SetSpineAnimation("Idle", true);
+                currentAnimation = "Idle";
+                isJumping = false;
+            };
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isJumping = false;
         }
     }
 
