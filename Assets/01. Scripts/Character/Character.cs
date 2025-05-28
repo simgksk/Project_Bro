@@ -1,5 +1,6 @@
 using Spine;
 using Spine.Unity;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -88,14 +89,21 @@ public abstract class Character : MonoBehaviour
             }
             else if (animator != null)
             {
-                animator.SetTrigger("Jump");
+                if (HasAnimatorParameter("Jump"))
+                {
+                    animator.SetTrigger("Jump");
+                }
+                else
+                {
+                    return;
+                }
             }
         }
     }
 
     #endregion
 
-    #region Spain Animation
+    #region Spain & Animation
 
     protected virtual void SetSpineAnimation(string animationName, bool loop = true)
     {
@@ -122,6 +130,16 @@ public abstract class Character : MonoBehaviour
         {
             isJumping = false;
         }
+    }
+
+    protected bool HasAnimatorParameter(string paramName)
+    {
+        foreach (AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.name == paramName)
+                return true;
+        }
+        return false;
     }
 
     #endregion
