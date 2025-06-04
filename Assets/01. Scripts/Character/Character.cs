@@ -78,7 +78,7 @@ public abstract class Character : MonoBehaviour
         {
             isJumping = true;
 
-            rb.velocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
 
             Vector3 jumpDirection = Vector3.up * jumpForce;
             rb.AddForce(jumpDirection, ForceMode.Impulse);
