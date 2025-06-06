@@ -13,7 +13,7 @@ public abstract class Character : MonoBehaviour
     [Header("Jump Setting")]
     public float jumpPower = 1f;
     private Rigidbody rb;
-    bool isJumping = false;
+    [SerializeField]bool isJumping = false;
 
     [Header("Spain & Animaion Setting")]
     public SkeletonAnimation skeletonAnimation;
@@ -89,6 +89,7 @@ public abstract class Character : MonoBehaviour
             }
             else if (animator != null)
             {
+                animator.SetBool("isGround", false);
                 if (HasAnimatorParameter("Jump"))
                 {
                     animator.SetTrigger("Jump");
@@ -126,9 +127,10 @@ public abstract class Character : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             isJumping = false;
+            animator.SetBool("isGround", true);
         }
     }
 
