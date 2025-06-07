@@ -1,5 +1,7 @@
 using Spine;
 using Spine.Unity;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -7,10 +9,12 @@ using UnityEngine;
 public abstract class Character : MonoBehaviour
 {
     [Header("Move Setting")]
-    protected float moveSpeed = 5f;
-    protected float jumpForce = 7f;
+    protected float moveDistance = 3f;
+    protected float moveDuration = 0.15f;
+    protected bool isMoving = false;
 
     [Header("Jump Setting")]
+    protected float jumpForce = 7f;
     public float jumpPower = 1f;
     private Rigidbody rb;
     [SerializeField]bool isJumping = false;
@@ -47,11 +51,13 @@ public abstract class Character : MonoBehaviour
     #region Move
     public virtual void Move()
     {
-        bool isMoving = Input.GetKey(KeyCode.D);
-
-        if (isMoving)
+        if (Input.GetKeyDown(KeyCode.D))
         {
-            transform.position += Vector3.right * moveSpeed * Time.deltaTime;
+            if (!isMoving)
+            {
+                StartCoroutine(MoveCourutine());
+            }
+            //transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
 
         if(isJumping)
@@ -67,6 +73,26 @@ public abstract class Character : MonoBehaviour
         {
             animator.SetBool("isRunning", isMoving);
         }
+    }
+
+    IEnumerator MoveCourutine()
+    {
+        isMoving = true;
+        float t = 0;
+        
+        Vector3 start = transform.position;
+        Vector3 target = transform.position + Vector3.right * moveDistance;
+
+        while (t < moveDuration)
+        {
+            yield return null;
+
+            t += Time.deltaTime;
+
+            transform.position = Vector3.Lerp(start, target, t / moveDuration);
+        }
+        isMoving = false;
+        rb.linearVelocity = Vector3.zero;
     }
 
     #endregion
@@ -130,7 +156,10 @@ public abstract class Character : MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
         {
             isJumping = false;
-            animator.SetBool("isGround", true);
+            if(animator != null)
+            {
+                animator.SetBool("isGround", true);
+            }
         }
     }
 
