@@ -17,6 +17,7 @@ public class TagManager : MonoBehaviour
         {
             SwitchPlayer(0, new Vector3(0, 2.5f, 0));
         }
+        FindAnyObjectByType<MapGenerator>().InitialSpawn();
     }
 
     void Update()
@@ -46,9 +47,11 @@ public class TagManager : MonoBehaviour
         {
             currentCamera = Instantiate(cameraPrefab);
             currentCamera.transform.SetParent(currentPlayer.transform);
-            currentCamera.transform.localPosition = new Vector3(0, 2, -10);
+            currentCamera.transform.localPosition = new Vector3(0, 6.5f, -50);
             currentCamera.transform.localRotation = Quaternion.identity;
         }
+
+        PlayerManager.Instance.CurrentCharacter = currentPlayer;
     }
 
     public Transform GetCurrentPlayerTransform()

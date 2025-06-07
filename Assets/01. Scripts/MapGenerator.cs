@@ -1,85 +1,97 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+[System.Serializable]
+public class PlatformData
+{
+    public GameObject prefab;
+    public float length = 5f; // 이 프리팹의 길이 (X축 크기)
+}
+
 public class MapGenerator : MonoBehaviour
 {
-    [Header("Map Settings")]
-    public float mapSpacing = 5f;       // 간격 (X, Y 동일하게 적용)
-    public Transform player;            // 플레이어 참조
-    public int initialMaps = 3;         // 처음 미리 생성할 랜덤 맵 개수
-    public int maxActiveMaps = 10;      // 활성화되는 맵 개수
+    public Transform player;
 
-    [Header("Map Prefabs")]
-    public GameObject startingMapPrefab; // 시작 위치의 고정 맵 프리팹
-    public Vector3 startingMapPosition = new Vector3(0f, -4f, 0f); // 시작 맵의 위치
-    public GameObject[] mapPrefabs;      // 랜덤으로 생성할 맵 프리팹들
+    [Header("프리팹 설정")]
+    public GameObject startPlatformPrefab;
+    public Vector3 startPlatformPosition = new Vector3(-4f, -6f, 1f);
+    public float startPlatformLength = 5f;
 
-    private Queue<GameObject> activeMaps = new Queue<GameObject>();
-    private float nextMapX = 0f;
+    public PlatformData[] platformDatas;
 
-    void Start()
+    [Header("설정 값")]
+    public float platformY = -6f;
+    public int initialPlatformCount = 5;
+    public float removeDistanceBehindPlayer = 20f;
+    public float gapBetweenPlatforms = 2f;
+
+    private float nextSpawnX;
+    private List<GameObject> activePlatforms = new List<GameObject>();
+
+    public void Start()
     {
-        SpawnStartingMap();  // 고정 맵 생성
-
-        // 시작 시 3개의 맵 미리 생성
-        for (int i = 0; i < initialMaps; i++)
+        if (PlayerManager.Instance?.CurrentCharacter != null)
         {
-            SpawnRandomMap();
+            player = PlayerManager.Instance.CurrentCharacter.transform;
+        }
+
+        InitialSpawn();
+    }
+
+    public void InitialSpawn()
+    {
+        // 시작 플랫폼 생성
+        GameObject startPlatform = Instantiate(startPlatformPrefab, startPlatformPosition, Quaternion.identity);
+        startPlatform.transform.localEulerAngles = new Vector3(-90, 180, 0);
+        activePlatforms.Add(startPlatform);
+
+        nextSpawnX = startPlatformPosition.x + startPlatformLength;
+
+        // 나머지 초기 플랫폼 생성
+        for (int i = 1; i < initialPlatformCount; i++)
+        {
+            SpawnPlatform();
         }
     }
 
     void Update()
     {
-        if (player.position.x >= nextMapX - (mapSpacing * 2))
+        if (PlayerManager.Instance?.CurrentCharacter != null)
         {
-            SpawnRandomMap();
+            player = PlayerManager.Instance.CurrentCharacter.transform;
         }
 
-        if (activeMaps.Count > maxActiveMaps)
+        if (player == null) return;
+
+        // 플레이어가 다음 스폰 위치에 가까워졌는지 확인
+        while (player.position.x + 30f > nextSpawnX)
         {
-            GameObject oldMap = activeMaps.Dequeue();
-            Destroy(oldMap);
+            SpawnPlatform();
+        }
+
+        // 뒤에 있는 플랫폼 제거
+        for (int i = activePlatforms.Count - 1; i >= 0; i--)
+        {
+            if (player.position.x - activePlatforms[i].transform.position.x > removeDistanceBehindPlayer)
+            {
+                Destroy(activePlatforms[i]);
+                activePlatforms.RemoveAt(i);
+            }
         }
     }
 
-    void SpawnStartingMap()
+    void SpawnPlatform()
     {
-        if (startingMapPrefab != null)
-        {
-            GameObject startMap = Instantiate(startingMapPrefab, startingMapPosition, Quaternion.Euler(-90f, 0f, 0f));
-            activeMaps.Enqueue(startMap);
+        PlatformData data = platformDatas[Random.Range(0, platformDatas.Length)];
 
-            float mapWidth = GetMapWidth(startMap);
-            nextMapX = startingMapPosition.x + mapWidth + mapSpacing;
-        }
-    }
+        float spawnX = nextSpawnX + data.length / 2f;
+        Vector3 spawnPos = new Vector3(spawnX, platformY, 1f);
 
-    void SpawnRandomMap()
-    {
-        if (mapPrefabs.Length == 0) return;
+        GameObject platform = Instantiate(data.prefab, spawnPos, Quaternion.identity);
+        platform.transform.localEulerAngles = new Vector3(-90, 180, 0);
+        activePlatforms.Add(platform);
 
-        GameObject randomMapPrefab = mapPrefabs[Random.Range(0, mapPrefabs.Length)];
-        float mapScaleX = randomMapPrefab.transform.localScale.x;
-
-        float randomY = Random.Range(-mapSpacing, mapSpacing);
-        Vector3 spawnPos = new Vector3(nextMapX, startingMapPosition.y + randomY, 0);
-        GameObject newMap = Instantiate(randomMapPrefab, spawnPos, Quaternion.Euler(-90f, 0f, 0f));
-
-        activeMaps.Enqueue(newMap);
-        nextMapX += mapScaleX + mapSpacing;
-    }
-
-    float GetMapWidth(GameObject map)
-    {
-        Renderer[] renderers = map.GetComponentsInChildren<Renderer>();
-        if (renderers.Length == 0) return 0f;
-
-        Bounds bounds = renderers[0].bounds;
-        foreach (Renderer renderer in renderers)
-        {
-            bounds.Encapsulate(renderer.bounds);
-        }
-
-        return bounds.size.x;
+        // 다음 위치 갱신: 현재 길이 + 간격
+        nextSpawnX += data.length + gapBetweenPlatforms;
     }
 }
