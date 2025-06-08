@@ -181,21 +181,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1051183427}
   startPlatformPrefab: {fileID: 3137242886063064115, guid: 044f41e16fca20b42b08bbe2f440f62a, type: 3}
-  startPlatformPosition: {x: -4, y: -4, z: 1}
-  startPlatformLength: 5
-  platformDatas:
-  - prefab: {fileID: 6685918573159133669, guid: 9894169fe8abc1040859fcdee36759ca, type: 3}
-    length: 0
-  - prefab: {fileID: 43891266237351730, guid: 77c32ec046861834595f5ba5089acfe6, type: 3}
-    length: 0
-  - prefab: {fileID: 3137242886063064115, guid: 044f41e16fca20b42b08bbe2f440f62a, type: 3}
-    length: 0
-  - prefab: {fileID: 7867435477309090088, guid: 5999747a762a49a4bb21ad29f0ada3b6, type: 3}
-    length: 0
-  platformY: -4
-  initialPlatformCount: 10
+  startPlatformPosition: {x: -2, y: -4, z: 1}
+  platformPrefabs:
+  - {fileID: 6685918573159133669, guid: 9894169fe8abc1040859fcdee36759ca, type: 3}
+  - {fileID: 43891266237351730, guid: 77c32ec046861834595f5ba5089acfe6, type: 3}
+  - {fileID: 3137242886063064115, guid: 044f41e16fca20b42b08bbe2f440f62a, type: 3}
+  - {fileID: 7867435477309090088, guid: 5999747a762a49a4bb21ad29f0ada3b6, type: 3}
+  initialPlatformCount: 2
   removeDistanceBehindPlayer: 20
-  gapBetweenPlatforms: 2
+  gapBetweenPlatforms: 5
 --- !u!4 &546438915
 Transform:
   m_ObjectHideFlags: 0

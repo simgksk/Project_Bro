@@ -1,8 +1,6 @@
 using Spine;
 using Spine.Unity;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -17,9 +15,9 @@ public abstract class Character : MonoBehaviour
     protected float jumpForce = 7f;
     public float jumpPower = 1f;
     private Rigidbody rb;
-    [SerializeField]bool isJumping = false;
+    [SerializeField] bool isJumping = false;
 
-    [Header("Spain & Animaion Setting")]
+    [Header("Spine & Animation Setting")]
     public SkeletonAnimation skeletonAnimation;
     private Animator animator;
     private string currentAnimation = "";
@@ -27,14 +25,18 @@ public abstract class Character : MonoBehaviour
     protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
+        rb.linearVelocity = Vector3.zero;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
         AnimationTypeCheck();
     }
+
     public virtual void Update()
     {
         Move();
         Jump();
         ClickAttack();
     }
+
     private void AnimationTypeCheck()
     {
         if (skeletonAnimation != null)
@@ -48,7 +50,6 @@ public abstract class Character : MonoBehaviour
         }
     }
 
-    #region Move
     public virtual void Move()
     {
         if (Input.GetKeyDown(KeyCode.D))
@@ -57,13 +58,9 @@ public abstract class Character : MonoBehaviour
             {
                 StartCoroutine(MoveCourutine());
             }
-            //transform.position += Vector3.right * moveSpeed * Time.deltaTime;
         }
 
-        if(isJumping)
-        {
-            return;
-        }
+        if (isJumping) return;
 
         if (skeletonAnimation != null)
         {
@@ -79,31 +76,26 @@ public abstract class Character : MonoBehaviour
     {
         isMoving = true;
         float t = 0;
-        
-        Vector3 start = transform.position;
-        Vector3 target = transform.position + Vector3.right * moveDistance;
+        Vector3 start = rb.position;
+        Vector3 target = rb.position + Vector3.right * moveDistance;
 
         while (t < moveDuration)
         {
-            yield return null;
-
-            t += Time.deltaTime;
-
-            transform.position = Vector3.Lerp(start, target, t / moveDuration);
+            yield return new WaitForFixedUpdate();
+            t += Time.fixedDeltaTime;
+            Vector3 newPos = Vector3.Lerp(start, target, t / moveDuration);
+            rb.MovePosition(newPos);
         }
+
         isMoving = false;
         rb.linearVelocity = Vector3.zero;
     }
 
-    #endregion
-
-    #region Jump
     public virtual void Jump()
     {
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
         {
             isJumping = true;
-
             rb.linearVelocity = Vector3.zero;
 
             Vector3 jumpDirection = Vector3.up * jumpForce;
@@ -117,25 +109,14 @@ public abstract class Character : MonoBehaviour
             {
                 animator.SetBool("isGround", false);
                 if (HasAnimatorParameter("Jump"))
-                {
                     animator.SetTrigger("Jump");
-                }
-                else
-                {
-                    return;
-                }
             }
         }
     }
 
-    #endregion
-
-    #region Spain & Animation
-
     protected virtual void SetSpineAnimation(string animationName, bool loop = true)
     {
-        if (currentAnimation == animationName && loop)
-            return;
+        if (currentAnimation == animationName && loop) return;
 
         var trackEntry = skeletonAnimation.state.SetAnimation(0, animationName, loop);
         currentAnimation = animationName;
@@ -153,13 +134,19 @@ public abstract class Character : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+        if (collision.gameObject.CompareTag("Ground"))
         {
             isJumping = false;
-            if(animator != null)
+            if (animator != null)
             {
                 animator.SetBool("isGround", true);
             }
+        }
+        else if (collision.gameObject.CompareTag("Wall"))
+        {
+            Vector3 pushBack = -transform.right * 3f + Vector3.up * 1f;
+            rb.linearVelocity = Vector3.zero;
+            rb.AddForce(pushBack, ForceMode.Impulse);
         }
     }
 
@@ -172,10 +159,6 @@ public abstract class Character : MonoBehaviour
         }
         return false;
     }
-
-    #endregion
-
-    #region Attack
 
     public virtual void ClickAttack()
     {
@@ -193,7 +176,6 @@ public abstract class Character : MonoBehaviour
             }
         }
     }
-    public abstract void Attack();
 
-    #endregion
+    public abstract void Attack();
 }

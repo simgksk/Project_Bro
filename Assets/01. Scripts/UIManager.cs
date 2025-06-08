@@ -15,4 +15,11 @@ public class UIManager : MonoBehaviour
     {
         Application.Quit();
     }
+    void Exit()
+    {
+        if (Input.GetKeyUp(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+    }
 }
