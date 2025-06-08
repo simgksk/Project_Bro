@@ -17,7 +17,7 @@ public class TagManager : MonoBehaviour
         {
             SwitchPlayer(0, new Vector3(0, 2.5f, 0));
         }
-        FindAnyObjectByType<MapGenerator>().InitialSpawn();
+        //FindAnyObjectByType<MapGenerator>().InitialSpawn();
     }
 
     void Update()

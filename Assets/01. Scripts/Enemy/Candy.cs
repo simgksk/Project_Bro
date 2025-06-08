@@ -19,7 +19,6 @@ public class Candy : MonoBehaviour
     public float laserCooldown = 2f;
 
     private bool isFiring = false;
-
     private Rigidbody rb;
 
     void Start()
@@ -54,27 +53,44 @@ public class Candy : MonoBehaviour
 
         while (Vector3.Distance(transform.position, player.transform.position) <= detectDistance)
         {
-            // 공격 애니메이션 재생 (한번만 재생, loop 아님)
+            // 애니메이션: 공격과 동시에 레이저
             skeletonAnimation.state.SetAnimation(0, "Attacke", false);
 
-            // attack 애니메이션 끝나고 바로 레이저 발사
-            yield return new WaitForSeconds(laserDuration);
-
-            // 레이저 생성
             if (laserPrefab != null && laserSpawnPoint != null)
             {
-                GameObject laser = Instantiate(laserPrefab, laserSpawnPoint.position, laserSpawnPoint.rotation);
-                Destroy(laser, laserDuration); // 레이저 지속 시간 후 삭제
+                Vector3 direction = (player.transform.position - laserSpawnPoint.position).normalized;
+                float distance = Vector3.Distance(player.transform.position, laserSpawnPoint.position);
+
+                // 레이저 생성
+                GameObject laser = Instantiate(
+                    laserPrefab,
+                    laserSpawnPoint.position,
+                    Quaternion.LookRotation(direction)
+                );
+
+                // 레이저 크기 조정 (Z축으로 길게)
+                laser.transform.localScale = new Vector3(0.1f, 0.1f, distance);
+
+                // 중심 피벗 보정: 앞으로 반만큼 이동
+                laser.transform.position += laser.transform.forward * (distance / 2f);
+
+                // 일정 시간 후 삭제
+                Destroy(laser, laserDuration);
             }
 
-            // 공격 애니메이션 끝난 후 다시 Idle 애니메이션 루프로 복귀
-            skeletonAnimation.state.SetAnimation(0, "Idle", true);
+            // laserDuration 후 Idle로 전환
+            StartCoroutine(ResetToIdleAfter(laserDuration));
 
-            // 대기 시간 (레이저 쏘고 쉬는 시간)
-            yield return new WaitForSeconds(laserCooldown);
+            yield return new WaitForSeconds(laserDuration + laserCooldown);
         }
 
         isFiring = false;
+    }
+
+    IEnumerator ResetToIdleAfter(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        skeletonAnimation.state.SetAnimation(0, "Idle", true);
     }
 
     GameObject FindPlayerInLayer()

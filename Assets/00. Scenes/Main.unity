@@ -183,13 +183,13 @@ MonoBehaviour:
   startPlatformPrefab: {fileID: 3137242886063064115, guid: 044f41e16fca20b42b08bbe2f440f62a, type: 3}
   startPlatformPosition: {x: -2, y: -4, z: 1}
   platformPrefabs:
-  - {fileID: 6685918573159133669, guid: 9894169fe8abc1040859fcdee36759ca, type: 3}
-  - {fileID: 43891266237351730, guid: 77c32ec046861834595f5ba5089acfe6, type: 3}
-  - {fileID: 3137242886063064115, guid: 044f41e16fca20b42b08bbe2f440f62a, type: 3}
-  - {fileID: 7867435477309090088, guid: 5999747a762a49a4bb21ad29f0ada3b6, type: 3}
-  initialPlatformCount: 2
-  removeDistanceBehindPlayer: 20
-  gapBetweenPlatforms: 5
+  - {fileID: 8713260378555740780, guid: 84df2095c49d63946a19efeb360213f0, type: 3}
+  - {fileID: 206264676645043732, guid: 067cb5a68d6dc1942abf1776b3c10516, type: 3}
+  - {fileID: 3694118379452674724, guid: 1ad8f30062ca31e4e9160c4fbc662581, type: 3}
+  - {fileID: 8153052308857989569, guid: ebcd1fdb9413eac43b9f15b051ae9c9e, type: 3}
+  - {fileID: 6681701980284126214, guid: 0ad22f44fa109ea4f9ddd39705a34b1a, type: 3}
+  platformCount: 5
+  removeDistanceBehindPlayer: 50
 --- !u!4 &546438915
 Transform:
   m_ObjectHideFlags: 0
