@@ -179,17 +179,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c0cad300b7d6824cad3bc9a08304c62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1051183427}
-  startPlatformPrefab: {fileID: 3137242886063064115, guid: 044f41e16fca20b42b08bbe2f440f62a, type: 3}
-  startPlatformPosition: {x: -2, y: -4, z: 1}
-  platformPrefabs:
+  mapPrefabs:
   - {fileID: 8713260378555740780, guid: 84df2095c49d63946a19efeb360213f0, type: 3}
   - {fileID: 206264676645043732, guid: 067cb5a68d6dc1942abf1776b3c10516, type: 3}
   - {fileID: 3694118379452674724, guid: 1ad8f30062ca31e4e9160c4fbc662581, type: 3}
   - {fileID: 8153052308857989569, guid: ebcd1fdb9413eac43b9f15b051ae9c9e, type: 3}
   - {fileID: 6681701980284126214, guid: 0ad22f44fa109ea4f9ddd39705a34b1a, type: 3}
-  platformCount: 5
-  removeDistanceBehindPlayer: 50
+  mapSpacing: 45
+  viewDistance: 5
+  enemyPrefabs:
+  - {fileID: 568129505966319767, guid: 0392829754418be4690f4a3a8a5ab77b, type: 3}
+  - {fileID: 6818680555599434381, guid: 376a061ad2ba424438992fb955741430, type: 3}
+  - {fileID: 7268915909516390232, guid: 71efa864591735347a66e8199e409aff, type: 3}
+  enemiesPerMap: 3
 --- !u!4 &546438915
 Transform:
   m_ObjectHideFlags: 0

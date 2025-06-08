@@ -10,12 +10,15 @@ public abstract class Character : MonoBehaviour
     protected float moveDistance = 3f;
     protected float moveDuration = 0.15f;
     protected bool isMoving = false;
+    private Coroutine moveRoutine;
 
     [Header("Jump Setting")]
     protected float jumpForce = 7f;
     public float jumpPower = 1f;
     private Rigidbody rb;
-    [SerializeField] bool isJumping = false;
+
+    [SerializeField] private int maxJumpCount = 2; // 이중 점프까지 허용
+    private int jumpCount = 0;
 
     [Header("Spine & Animation Setting")]
     public SkeletonAnimation skeletonAnimation;
@@ -56,11 +59,9 @@ public abstract class Character : MonoBehaviour
         {
             if (!isMoving)
             {
-                StartCoroutine(MoveCourutine());
+                moveRoutine = StartCoroutine(MoveCourutine());
             }
         }
-
-        if (isJumping) return;
 
         if (skeletonAnimation != null)
         {
@@ -89,13 +90,14 @@ public abstract class Character : MonoBehaviour
 
         isMoving = false;
         rb.linearVelocity = Vector3.zero;
+        moveRoutine = null;
     }
 
     public virtual void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W))
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.W)) && jumpCount < maxJumpCount)
         {
-            isJumping = true;
+            jumpCount++;
             rb.linearVelocity = Vector3.zero;
 
             Vector3 jumpDirection = Vector3.up * jumpForce;
@@ -127,7 +129,6 @@ public abstract class Character : MonoBehaviour
             {
                 SetSpineAnimation("Idle", true);
                 currentAnimation = "Idle";
-                isJumping = false;
             };
         }
     }
@@ -136,7 +137,7 @@ public abstract class Character : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
-            isJumping = false;
+            jumpCount = 0;
             if (animator != null)
             {
                 animator.SetBool("isGround", true);
@@ -144,6 +145,14 @@ public abstract class Character : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Wall"))
         {
+            // 이동 중이면 중단
+            if (moveRoutine != null)
+            {
+                StopCoroutine(moveRoutine);
+                moveRoutine = null;
+                isMoving = false;
+            }
+
             Vector3 pushBack = -transform.right * 3f + Vector3.up * 1f;
             rb.linearVelocity = Vector3.zero;
             rb.AddForce(pushBack, ForceMode.Impulse);
@@ -178,4 +187,10 @@ public abstract class Character : MonoBehaviour
     }
 
     public abstract void Attack();
+
+    // 외부에서 착지 상태 확인용
+    public bool IsGrounded()
+    {
+        return jumpCount == 0;
+    }
 }
