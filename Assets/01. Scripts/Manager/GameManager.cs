@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
@@ -14,21 +15,29 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI gameOverScoreText;
     public TextMeshProUGUI gameOverBestScoreText;
 
+    [Header("Pause UI")]
+    public GameObject pausePanel;
+    public GameObject pauseButton;
+
+    [Header("Countdown UI")]
+    public TextMeshProUGUI countdownText;
+
+    [Header("Sound Settings")]
+    public AudioSource audioSource;
+    public AudioClip inGameClip;
+    public AudioClip gameOverClip;
+
     private int score = 0;
     private int bestScore = 0;
     private bool isGameOver = false;
+    private bool isPaused = false;
 
     private void Awake()
     {
         if (Instance == null)
-        {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
 
     private void Start()
@@ -36,11 +45,30 @@ public class GameManager : MonoBehaviour
         bestScore = PlayerPrefs.GetInt("BestScore", 0);
         UpdateScoreUI();
         gameOverPanel?.SetActive(false);
+        pausePanel?.SetActive(false);
+        scoreText?.gameObject.SetActive(true);
+        pauseButton?.SetActive(true);
+        countdownText?.gameObject.SetActive(false);
+
+        if (audioSource != null && inGameClip != null)
+        {
+            audioSource.clip = inGameClip;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.P) && !isGameOver)
+        {
+            TogglePause();
+        }
     }
 
     public void AddScore(int amount)
     {
-        if (isGameOver) return;
+        if (isGameOver || isPaused) return;
 
         score += amount;
         UpdateScoreUI();
@@ -50,8 +78,21 @@ public class GameManager : MonoBehaviour
     {
         score = 0;
         isGameOver = false;
+        isPaused = false;
         UpdateScoreUI();
         gameOverPanel?.SetActive(false);
+        pausePanel?.SetActive(false);
+        scoreText?.gameObject.SetActive(true);
+        pauseButton?.SetActive(true);
+        Time.timeScale = 1f;
+
+        // 인게임 사운드 재생 다시 시작
+        if (audioSource != null && inGameClip != null)
+        {
+            audioSource.clip = inGameClip;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
     }
 
     public void GameOver()
@@ -60,7 +101,16 @@ public class GameManager : MonoBehaviour
 
         isGameOver = true;
         gameOverPanel?.SetActive(true);
-        scoreText.gameObject.SetActive(false);
+        scoreText?.gameObject.SetActive(false);
+        pauseButton?.SetActive(false);
+
+        if (audioSource != null && gameOverClip != null)
+        {
+            audioSource.Stop(); // 인게임 음악 중지
+            audioSource.clip = gameOverClip;
+            audioSource.loop = false;
+            audioSource.Play();
+        }
 
         if (score > bestScore)
         {
@@ -70,6 +120,58 @@ public class GameManager : MonoBehaviour
 
         UpdateScoreUI();
         UpdateGameOverUI();
+    }
+
+    public void PauseGame()
+    {
+        if (isGameOver) return;
+
+        isPaused = true;
+        Time.timeScale = 0f;
+        pausePanel?.SetActive(true);
+    }
+
+    public void ResumeGame()
+    {
+        if (isGameOver) return;
+
+        pausePanel?.SetActive(false);
+        StartCoroutine(ResumeWithCountdown());
+    }
+
+    private IEnumerator ResumeWithCountdown()
+    {
+        // UI 숨기기
+        scoreText?.gameObject.SetActive(false);
+        pauseButton?.SetActive(false);
+        countdownText?.gameObject.SetActive(true);
+
+        int count = 3;
+        while (count > 0)
+        {
+            countdownText.text = count.ToString();
+            yield return new WaitForSecondsRealtime(1f);
+            count--;
+        }
+
+        countdownText.text = "Go!";
+        yield return new WaitForSecondsRealtime(1f);
+
+        countdownText.gameObject.SetActive(false);
+
+        // UI 다시 활성화
+        scoreText?.gameObject.SetActive(true);
+        pauseButton?.SetActive(true);
+
+        isPaused = false;
+        Time.timeScale = 1f;
+    }
+
+
+    public void TogglePause()
+    {
+        if (isPaused) ResumeGame();
+        else PauseGame();
     }
 
     private void UpdateScoreUI()
@@ -89,4 +191,5 @@ public class GameManager : MonoBehaviour
 
     public int GetScore() => score;
     public int GetBestScore() => bestScore;
+    public bool IsPaused() => isPaused;
 }

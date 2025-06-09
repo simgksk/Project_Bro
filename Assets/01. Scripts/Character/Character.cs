@@ -27,6 +27,8 @@ public abstract class Character : MonoBehaviour
 
     protected virtual void Start()
     {
+        PlayerManager.Instance.SetCurrentCharacter(this.gameObject);
+
         rb = GetComponent<Rigidbody>();
         rb.linearVelocity = Vector3.zero;
         rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
@@ -195,7 +197,7 @@ public abstract class Character : MonoBehaviour
         {
             if (skeletonAnimation != null)
             {
-                SetSpineAnimation("Attack", false);
+                //SetSpineAnimation("Attack", false);
                 Attack();
             }
             else if (animator != null)

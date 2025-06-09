@@ -18,4 +18,9 @@ public class PlayerManager : MonoBehaviour
     }
 
     public GameObject CurrentCharacter { get; set; }
+
+    public void SetCurrentCharacter(GameObject character)
+    {
+        CurrentCharacter = character;
+    }
 }
