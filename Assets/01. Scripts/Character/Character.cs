@@ -44,7 +44,7 @@ public abstract class Character : MonoBehaviour
     }
     private void GameOver()
     {
-        if(transform.position.y < -10f)
+        if(transform.position.y < -5f)
         {
             GameManager.Instance.GameOver();
         }

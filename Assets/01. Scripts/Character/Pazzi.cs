@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Pazzi : Character
 {
+    private bool isAttacking = false;
+
     protected override void Start()
     {
         base.Start();
@@ -11,26 +13,31 @@ public class Pazzi : Character
     public override void Update()
     {
         base.Update();
+        if (isAttacking)
+        {
+            return;
+        }
     }
 
     public override void Attack()
     {
+        if (isAttacking) return;  // 공격 중이면 중복 공격 방지
+
         Debug.Log("Pazzi Attack");
         StartCoroutine(AttackMovementRoutine());
     }
 
     private IEnumerator AttackMovementRoutine()
     {
-        Vector3 originalPosition = transform.position;
+        isAttacking = true;
 
-        // 2D 게임에서 오른쪽으로 이동 (플립 상태나 방향에 따라 좌우 조정 가능)
+        Vector3 originalPosition = transform.position;
         Vector3 targetPosition = originalPosition + transform.right * 3f;
 
-        // 이동 디버깅
         Debug.Log($"Original: {originalPosition}, Target: {targetPosition}");
         Debug.DrawLine(originalPosition, targetPosition, Color.red, 1f);
 
-        float moveDuration = 0.1f;
+        float moveDuration = 0.3f;
         float attackDuration = 2f;
         float returnDuration = 0.5f;
 
@@ -56,5 +63,7 @@ public class Pazzi : Character
             yield return null;
         }
         transform.position = originalPosition;
+
+        isAttacking = false;
     }
 }

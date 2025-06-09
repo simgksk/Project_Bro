@@ -4,7 +4,7 @@ using UnityEngine;
 public class MapGenerator : MonoBehaviour
 {
     public GameObject[] mapPrefabs;    // 사용할 맵 프리팹 배열
-    public float mapSpacing = 45f;     // 맵 간격
+    public float mapSpacing = 50f;     // 맵 간격
     public int viewDistance = 5;       // 플레이어 기준으로 왼쪽/오른쪽 유지할 맵 개수
 
     [Header("Enemy Spawn Settings")]
@@ -50,7 +50,7 @@ public class MapGenerator : MonoBehaviour
                 spawnedMaps.Add(i, instance);
 
                 // 플레이어 주변 10단위 이내면 에너미 스폰 제외
-                if (Mathf.Abs(playerX - spawnPos.x) > 10f)
+                if (Mathf.Abs(playerX - spawnPos.x) > 5f)
                 {
                     SpawnEnemiesOnMap(instance);
                 }
