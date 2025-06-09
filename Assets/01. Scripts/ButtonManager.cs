@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class UIManager : MonoBehaviour
+public class ButtonManager : MonoBehaviour
 {
     public void Start_Button()
     {
@@ -21,5 +21,13 @@ public class UIManager : MonoBehaviour
         {
             Application.Quit();
         }
+    }
+    public void Home_Button()
+    {
+        SceneManager.LoadScene(0);
+    }
+    public void Retry_Button()
+    {
+        SceneManager.LoadScene(1);
     }
 }

@@ -44,13 +44,16 @@ public class MapGenerator : MonoBehaviour
         {
             if (!spawnedMaps.ContainsKey(i))
             {
-                Vector3 spawnPos = new Vector3(i * mapSpacing, -4f, 2f);  // Y 좌표 -4로 고정
+                Vector3 spawnPos = new Vector3(i * mapSpacing, -4f, 2f);
                 GameObject prefab = mapPrefabs[Random.Range(0, mapPrefabs.Length)];
                 GameObject instance = Instantiate(prefab, spawnPos, Quaternion.identity);
                 spawnedMaps.Add(i, instance);
 
-                // 에너미 소환
-                SpawnEnemiesOnMap(instance);
+                // 플레이어 주변 10단위 이내면 에너미 스폰 제외
+                if (Mathf.Abs(playerX - spawnPos.x) > 10f)
+                {
+                    SpawnEnemiesOnMap(instance);
+                }
             }
         }
 
@@ -71,6 +74,7 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
+
     void SpawnEnemiesOnMap(GameObject mapInstance)
     {
         if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
@@ -86,7 +90,8 @@ public class MapGenerator : MonoBehaviour
             float spawnX = Random.Range(mapStartX, mapEndX);
             Vector3 spawnPos = new Vector3(spawnX, groundY, 0f);
 
-            Instantiate(enemyPrefab, spawnPos, Quaternion.identity, mapInstance.transform);
+            GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity, mapInstance.transform);
+            enemy.transform.localEulerAngles = new Vector3(0, 180, 0);
         }
     }
 }

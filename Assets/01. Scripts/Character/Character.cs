@@ -157,7 +157,18 @@ public abstract class Character : MonoBehaviour
             rb.linearVelocity = Vector3.zero;
             rb.AddForce(pushBack, ForceMode.Impulse);
         }
+        else if (collision.gameObject.CompareTag("Enemy"))
+        {
+            // Àû°ú ºÎµúÇûÀ» ¶§ ³Ë¹é
+            Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
+            pushDirection.y = 0.5f; // »ìÂ¦ À§·Î ¹Ð±â
+            float pushForce = 4f;
+
+            rb.linearVelocity = Vector3.zero;
+            rb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
+        }
     }
+
 
     protected bool HasAnimatorParameter(string paramName)
     {

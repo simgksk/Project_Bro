@@ -22,13 +22,15 @@ public class JellyBear : MonoBehaviour
         skeletonAnimation = GetComponent<SkeletonAnimation>();
         rb = GetComponent<Rigidbody>();
 
-        player = FindPlayerInLayer();
-        if (player == null)
-        {
-            Debug.LogWarning("플레이어를 찾을 수 없습니다. 레이어 설정을 확인하세요.");
-        }
-
         skeletonAnimation.state.SetAnimation(0, "animation", true);
+
+        // 플레이어 찾기
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        if (transform.position.y < -10f)
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Update()
@@ -49,25 +51,19 @@ public class JellyBear : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (((1 << collision.gameObject.layer) & playerLayer) != 0)
+        if (collision.gameObject.CompareTag("Player"))
         {
-            Vector3 pushDir = (transform.position - collision.transform.position).normalized;
-            rb.AddForce(pushDir * pushForce, ForceMode.Impulse);
-        }
-    }
-
-    GameObject FindPlayerInLayer()
-    {
-        GameObject[] allObjects = FindObjectsOfType<GameObject>();
-        foreach (GameObject obj in allObjects)
-        {
-            if (((1 << obj.layer) & playerLayer) != 0)
+            Rigidbody playerRb = collision.gameObject.GetComponent<Rigidbody>();
+            if (playerRb != null)
             {
-                return obj;
+                // 넉백 방향 계산 (플레이어 → 반대 방향)
+                Vector3 pushDirection = (collision.transform.position - transform.position).normalized;
+                pushDirection.y = 0.5f; // 위쪽으로 살짝 밀기
+
+                playerRb.AddForce(pushDirection * pushForce, ForceMode.Impulse);
             }
         }
-        return null;
     }
 }

@@ -34,8 +34,8 @@ public class Map : MonoBehaviour
 
             Vector3 spawnPos = new Vector3(randomX, groundY, 0f);
 
-            GameObject enemy = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
-            enemy.transform.localEulerAngles = new Vector3(0, -180, 0);
+            Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
+
         }
     }
 }

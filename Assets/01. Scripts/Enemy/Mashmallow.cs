@@ -31,7 +31,13 @@ public class Mashmallow : MonoBehaviour
             originalColliderCenter = boxCol.center;
         }
     }
-
+    private void Update()
+    {
+        if (transform.position.y < -10f)
+        {
+            Destroy(gameObject);
+        }
+    }
     void OnCollisionEnter(Collision collision)
     {
         if (isBeingSquished) return;

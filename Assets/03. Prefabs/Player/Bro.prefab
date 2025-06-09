@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 8516416408089514278}
   m_Layer: 7
   m_Name: Bro
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -176,5 +176,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpPower: 1
-  isJumping: 0
+  maxJumpCount: 2
   skeletonAnimation: {fileID: 0}
