@@ -38,8 +38,15 @@ public abstract class Character : MonoBehaviour
         Move();
         Jump();
         ClickAttack();
+        GameOver();
     }
-
+    private void GameOver()
+    {
+        if(transform.position.y < -10f)
+        {
+            GameManager.Instance.GameOver();
+        }
+    }
     private void AnimationTypeCheck()
     {
         if (skeletonAnimation != null)
@@ -87,6 +94,8 @@ public abstract class Character : MonoBehaviour
             Vector3 newPos = Vector3.Lerp(start, target, t / moveDuration);
             rb.MovePosition(newPos);
         }
+
+        GameManager.Instance.AddScore(1);
 
         isMoving = false;
         rb.linearVelocity = Vector3.zero;
