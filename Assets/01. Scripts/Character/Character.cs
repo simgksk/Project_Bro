@@ -17,7 +17,7 @@ public abstract class Character : MonoBehaviour
     public float jumpPower = 1f;
     private Rigidbody rb;
 
-    [SerializeField] private int maxJumpCount = 2; // 이중 점프까지 허용
+    [SerializeField] private int maxJumpCount = 2; 
     private int jumpCount = 0;
 
     [Header("Spine & Animation Setting")]
@@ -156,7 +156,6 @@ public abstract class Character : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Wall"))
         {
-            // 이동 중이면 중단
             if (moveRoutine != null)
             {
                 StopCoroutine(moveRoutine);
@@ -170,9 +169,8 @@ public abstract class Character : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Enemy"))
         {
-            // 적과 부딪혔을 때 넉백
             Vector3 pushDirection = (transform.position - collision.transform.position).normalized;
-            pushDirection.y = 0.5f; // 살짝 위로 밀기
+            pushDirection.y = 0.5f; 
             float pushForce = 4f;
 
             rb.linearVelocity = Vector3.zero;
@@ -210,7 +208,6 @@ public abstract class Character : MonoBehaviour
 
     public abstract void Attack();
 
-    // 외부에서 착지 상태 확인용
     public bool IsGrounded()
     {
         return jumpCount == 0;

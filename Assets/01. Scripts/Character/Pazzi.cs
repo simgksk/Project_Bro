@@ -21,7 +21,7 @@ public class Pazzi : Character
 
     public override void Attack()
     {
-        if (isAttacking) return;  // 공격 중이면 중복 공격 방지
+        if (isAttacking) return;  
 
         Debug.Log("Pazzi Attack");
         StartCoroutine(AttackMovementRoutine());
@@ -41,7 +41,6 @@ public class Pazzi : Character
         float attackDuration = 2f;
         float returnDuration = 0.5f;
 
-        // 앞으로 이동
         float elapsed = 0f;
         while (elapsed < moveDuration)
         {
@@ -51,10 +50,8 @@ public class Pazzi : Character
         }
         transform.position = targetPosition;
 
-        // 공격 유지 시간
         yield return new WaitForSeconds(attackDuration);
 
-        // 원위치로 복귀
         elapsed = 0f;
         while (elapsed < returnDuration)
         {

@@ -13,7 +13,7 @@ public class ButtonManager : MonoBehaviour
     }
     public void Tutorial_Button()
     {
-        //SceneManager.LoadScene(2);
+        SceneManager.LoadScene(2);
     }
     public void Exit_Button()
     {

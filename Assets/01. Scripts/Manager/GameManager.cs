@@ -86,7 +86,6 @@ public class GameManager : MonoBehaviour
         pauseButton?.SetActive(true);
         Time.timeScale = 1f;
 
-        // 인게임 사운드 재생 다시 시작
         if (audioSource != null && inGameClip != null)
         {
             audioSource.clip = inGameClip;
@@ -106,7 +105,7 @@ public class GameManager : MonoBehaviour
 
         if (audioSource != null && gameOverClip != null)
         {
-            audioSource.Stop(); // 인게임 음악 중지
+            audioSource.Stop();
             audioSource.clip = gameOverClip;
             audioSource.loop = false;
             audioSource.Play();
@@ -141,7 +140,6 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator ResumeWithCountdown()
     {
-        // UI 숨기기
         scoreText?.gameObject.SetActive(false);
         pauseButton?.SetActive(false);
         countdownText?.gameObject.SetActive(true);
@@ -159,7 +157,6 @@ public class GameManager : MonoBehaviour
 
         countdownText.gameObject.SetActive(false);
 
-        // UI 다시 활성화
         scoreText?.gameObject.SetActive(true);
         pauseButton?.SetActive(true);
 
