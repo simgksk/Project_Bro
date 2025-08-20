@@ -573,7 +573,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TUTORIAL
+  m_text: HOW TO PLAY
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f6a5fbb42b904cb4bb0e13e9001994f9, type: 2}
   m_sharedMaterial: {fileID: 7312038988008132629, guid: f6a5fbb42b904cb4bb0e13e9001994f9, type: 2}
@@ -679,7 +679,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 5ca0756c572ff8b4694a5aa808d7dea0, type: 3}
+  m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 5ca0756c572ff8b4694a5aa808d7dea0, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
